@@ -66,7 +66,7 @@ function User(){
     };
     this.addLevel = function() {
         // 进入到下一关
-        localStorage.level = this.getLevel() + 1;
+        localStorage.level = parseInt(this.getLevel()) + 1;
     };
     this.getTimes = function() {
         // 取训练总次数
@@ -79,7 +79,7 @@ function User(){
     };
     this.addTimes = function() {
         // 给训练总次数加 1
-        localStorage.times = this.getTimes() + 1;
+        localStorage.times = parseInt(this.getTimes()) + 1;
     };
     this.getDuration = function() {
         // 取训练总时长（单位：秒）
@@ -92,7 +92,7 @@ function User(){
     };
     this.addDuration = function(newDuration) {
         // 给取训练总时长增加值（单位：秒）
-        localStorage.duration = this.getDuration + newDuration;
+        localStorage.duration = parseInt(this.getDuration) + newDuration;
     };
     this.isNewMember = function() {
         if (this.getName() == undefined) {
