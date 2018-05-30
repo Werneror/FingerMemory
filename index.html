@@ -6,19 +6,62 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="keywords" content="刻意练习,五笔字根,五笔输入法" />
     <meta name="description" content="以刻意练习理论为指导、根据练习者掌握情况动态生成训练内容，优先训练练习者掌握不佳内容的五笔输入法训练系统。" />
-    <style>
-        html,body{
-            margin: 0;
-            height: 100%;
-            font-size: 0;
-        }
-        iframe{
-            width: 100%;
-            height: 100%;
-            border: 0;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="statics/css/main.css" />
+    <script type="text/javascript" src="statics/js/data.js"></script>
+    <script type="text/javascript" src="statics/js/main.js"></script>
 </head>
-<body><iframe src="profile.html"></iframe></body>
+<body>
+
+    <header>
+        <br />
+        <h1 id="title">个人中心</h1>
+    </header>
+
+    <main>
+        <section id="profile">
+            <img id="avatar" width="70px" height="70px"/>
+            <br />
+            <big>欢迎，<span id="name">Werner</span></big>
+            <br /><br />
+            <div><button onclick="start();" id="start-button"></button></div>
+            <br />
+            <div>训练总时长：<span id="duration"></span>秒。</div>
+            <div>训练总次数：<span id="times"></span>次。</div>
+            <div>当前位于：<span id="level">第关</span>。</div>
+            <br />
+            <div>
+                <button onclick="setting();">设置</button>
+                <button onclick="logout();">注销</button>
+            </div>
+        </section>
+
+        <section id="setting">
+            <label for="name">昵称：</label>
+            <input type="text" name="name" id="user-name" placeholder="输入你的常用昵称" />
+            <br /><br />
+            <label for="qq">QQ：</label>
+            <input type="text" name="qq" id="user-qq" placeholder="用于显示头像" />
+            <br /><br />
+            <button onclick="submit();">确定</button>
+        </section>
+
+        <section id="ground">
+            <h2 class="zigen" id="display"></h2>
+            <input type="text" name="name" id="input" autofocus="autofocus" />
+            <br />
+            <br />
+            <div>本关进度：<span id="progress"></span></div>
+        </section>
+
+        <section id="help">
+        </section>
+    </main>
+
+    <footer>
+        <a href="https://github.com/werner-wiki/FingerMemory" target="_blank">手指记忆</a>
+        <a href="song.html" target="_blank">五笔字根歌</a>
+        <a href="https://blog.werner.wiki/" target="_blank">若水斋</a>
+    </footer>
+
+</body>
 </html>

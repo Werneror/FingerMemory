@@ -3,11 +3,6 @@ function gotoPage(newUrl) {
     window.location.href = newUrl;
 }
 
-/* 检查是否不在iframe中 */
-if(self == top){
-    gotoPage("index.html");
-}
-
 /* 根据时间计算不熟练度 */
 function unskilled(duration) {
     return parseFloat(Math.log2(duration + 1).toFixed(2));
@@ -22,13 +17,13 @@ function producer(trains) {
         total += train.unskilled;
         accumulative.push({'start': start,
                            'end': total,
-                           'source': train.source,
+                           'display': train.display,
                            'target': train.target})
     }
     var random = Math.floor(Math.random() * total * 100) / 100;
     for(item of accumulative) {
         if(item.start <= random && random <= item.end){
-            return {'source': item.source, 'target': item.target};
+            return {'display': item.display, 'target': item.target};
         }
     }
 }
@@ -59,7 +54,7 @@ function User(){
         // 取当前关卡
         var level = localStorage.level;
         if (level == undefined) {
-            return 1;
+            return 0;
         } else {
             return level;
         }
@@ -92,7 +87,7 @@ function User(){
     };
     this.addDuration = function(newDuration) {
         // 给取训练总时长增加值（单位：秒）
-        localStorage.duration = parseInt(this.getDuration) + newDuration;
+        localStorage.duration = parseFloat(this.getDuration()) + newDuration;
     };
     this.isNewMember = function() {
         if (this.getName() == undefined) {
@@ -118,4 +113,220 @@ function User(){
     };
 }
 
-user = new User();
+/* 关卡类 */
+function Level(number, maxTime, condition) {
+
+    this.number = number;
+    this.maxTime = maxTime;
+    this.condition = condition;
+
+    this.getCondition = function() {
+        return this.condition;
+    }
+
+    this.getMaxTime = function() {
+        return this.maxTime;
+    }
+
+    this.getTrains = function() {
+        return JSON.parse(localStorage.getItem("level" + this.number));
+    }
+
+    this.saveTrains = function(trains) {
+        localStorage.setItem("level" + this.number, JSON.stringify(trains));
+    }
+
+    this.initTrains = function() {
+        var trains = new Array();
+        var data = levels[this.number].data;
+        var maxUnskilled = unskilled(this.maxTime);
+        for(item of data) {
+            if (item.target != undefined) {
+                var target = item.target;
+            } else {
+                var target = item.display;
+            }
+            trains.push({"display": item.display,
+                         "target": target,
+                         "unskilled": maxUnskilled});
+        }
+        this.saveTrains(trains);
+    }
+
+    this.updateUnskilled = function(item, unskilled) {
+        var trains = this.getTrains();
+        for (train of trains) {
+            if(train.source === item.source && train.target === item.target){
+                train.unskilled = unskilled;
+            }
+        }
+        this.saveTrains(trains);
+    }
+
+    if (this.getTrains() == undefined) {
+        this.initTrains();
+    }
+}
+
+/* 页面切换 */
+function setTitle(title) {
+    document.getElementById("title").innerText = title;
+}
+
+function showSection(sectionId) {
+    var sections = document.getElementsByTagName('section');
+    for (section of sections) {
+        section.style.display = "none";
+    }
+    document.getElementById(sectionId).style.display = "block";
+    if (sectionId === "profile") {
+        initProfile();
+    } else if (sectionId === "setting"){
+        initSetting();
+    } else if (sectionId === "ground"){
+        initGround();
+    }
+}
+
+/* 按钮点击动作函数 */
+function start() {
+    if(user.getLevel() < levels.length) {
+        user.addTimes();
+        setTitle(levels[user.getLevel()].name);
+        showSection("ground");
+    }
+}
+
+function setting() {
+    setTitle("设置用户信息");
+    showSection("setting");
+}
+
+function logout() {
+    user.suicide();
+    setTitle("注册新用户");
+    showSection("setting");
+}
+
+function submit() {
+    var name = document.getElementById("user-name").value;
+    var qq = document.getElementById("user-qq").value;
+    if (name != '') {
+        user.setName(name);
+        if (qq != '') {
+            user.setQQ(qq);
+        }
+        setTitle("个人中心");
+        showSection("profile");
+    } else {
+        alert("昵称是必填的。");
+    }
+}
+
+/* 关卡逻辑处理函数 */
+
+/* 填充函数 */
+function initProfile() {
+    var times = user.getTimes();
+    var level = user.getLevel();
+    document.getElementById("name").innerText = user.getName();
+    document.getElementById("times").innerText = times;
+    document.getElementById("duration").innerText = parseInt(user.getDuration()).toFixed(0);
+    if(level < levels.length) {
+        document.getElementById("level").innerText = "第" + user.getLevel() + "关";
+        document.getElementById("start-button").innerText = "开始你的第" + (parseInt(times) + 1) + "次练习";
+    } else {
+        document.getElementById("level").innerText = "已通关";
+        document.getElementById("start-button").innerText = "您已通关";
+    }
+    document.getElementById("avatar").src = user.getAvatar();
+}
+
+function initSetting() {
+    var name = user.getName();
+    var qq = user.getQQ();
+    if (name != undefined) {
+        document.getElementById("user-name").value = name;
+    }
+    if (qq != undefined) {
+        document.getElementById("user-qq").value = qq;
+    }
+}
+
+function initGround() {
+    document.getElementById("input").focus();
+    var current = user.getLevel();
+    level = new Level(current,
+                      levels[current].maxTime,
+                      levels[current].condition);
+    updateProgress(level.getTrains(), level.getCondition());
+    var display = document.getElementById("display");
+    var input = document.getElementById("input");
+    step(display, input ,level);
+}
+
+function passLevel(){
+    alert("恭喜你通过了" + levels[user.getLevel()].name);
+    user.addLevel();
+    setTitle("个人中心");
+    showSection("profile");
+}
+
+function updateProgress(trains, condition) {
+    var skill = 0;
+    var total = 0;
+    var progress = document.getElementById("progress");
+    for (train of trains) {
+        if (train.unskilled <= condition) {
+            skill += 1;
+        }
+        total += 1;
+    }
+    progress.innerText = skill + '/' + total;
+    if (skill == total) {
+        passLevel();
+    }
+}
+
+function step(display, input ,level) {
+    input.value = ''; // 清除刷新页面后浏览器在input中的缓存
+    var train = producer(level.getTrains());
+    var maxTime = level.getMaxTime();
+    var condition = level.getCondition();
+    display.innerText = train.display;
+    var beginTime = new Date();
+    var recovery = false;
+    input.oninput = function() {
+        var endTime = new Date();
+        var time = (endTime-beginTime) / 1000.0;
+        user.addDuration(time);
+        if(input.value == train.target) {
+            if (time > maxTime) {
+                time = maxTime;
+            }
+            if (!recovery) {
+                var unskilledValue = unskilled(time);
+                level.updateUnskilled(train, unskilledValue);
+            }
+            setTimeout("step(display, input ,level)", 50);
+        } else {
+            if (!recovery) {
+                level.updateUnskilled(train, unskilled(maxTime));
+            }
+            setTimeout("input.value = '';", 50);
+            recovery = true;
+        }
+        updateProgress(level.getTrains(), condition);
+    };
+}
+
+/* 页面加载后执行 */
+window.onload = function(){
+    user = new User();
+    if (user.isNewMember()) {
+        setTitle("注册新用户");
+        showSection("setting");
+    } else {
+        initProfile();
+    }
+}

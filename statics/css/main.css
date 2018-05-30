@@ -1,0 +1,35 @@
+/* 字体 */
+@font-face{
+    font-family: "HanZiRootFont";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../font/HanZiRootFont.woff2") format("woff2"), url("../font/HanZiRootFont.ttf") format("ttf");
+}
+
+html, body{
+    margin: 0;
+    height: 100%;
+    text-align: center;
+}
+header{
+    margin-bottom: 50px;
+}
+footer{
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    bottom: 0px;
+}
+input{
+    text-align: center;
+}
+h1{
+    margin: 0px;
+}
+
+.zigen{
+    font-family: HanZiRootFont;
+}
+#setting, #ground, #help {
+    display: none;
+}
