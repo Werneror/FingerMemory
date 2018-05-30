@@ -5,7 +5,7 @@ function gotoPage(newUrl) {
 
 /* 根据时间计算不熟练度 */
 function unskilled(duration) {
-    return parseFloat(Math.log2(duration + 1).toFixed(2));
+    return parseFloat(Math.sqrt(duration).toFixed(2));
 }
 
 /* 训练元随机发生器 */
@@ -100,7 +100,7 @@ function User(){
         // 返回用户头像的 url
         var qq = this.getQQ();
         if (qq != undefined) {
-            return "http://q.qlogo.cn/headimg_dl?dst_uin=+" + qq +  " &spec=640&img_type=jpg";
+            return "http://qlogo2.store.qq.com/qzone/"+qq+"/"+qq+"/200";
         } else {
             return "statics/img/avatar.jpg"
         }
@@ -156,7 +156,7 @@ function Level(number, maxTime, condition) {
     this.updateUnskilled = function(item, unskilled) {
         var trains = this.getTrains();
         for (train of trains) {
-            if(train.source === item.source && train.target === item.target){
+            if(train.display === item.display && train.target === item.target){
                 train.unskilled = unskilled;
             }
         }
@@ -189,6 +189,11 @@ function showSection(sectionId) {
 }
 
 /* 按钮点击动作函数 */
+function openProfile() {
+    setTitle("个人中心");
+    showSection("profile");
+}
+
 function start() {
     if(user.getLevel() < levels.length) {
         user.addTimes();
@@ -216,22 +221,43 @@ function submit() {
         if (qq != '') {
             user.setQQ(qq);
         }
-        setTitle("个人中心");
-        showSection("profile");
+        openProfile();
     } else {
         alert("昵称是必填的。");
     }
 }
 
-/* 关卡逻辑处理函数 */
-
 /* 填充函数 */
+function humanTime(seconds) {
+    var humanRead = "";
+    var second = seconds % 60;
+    var minute = parseInt((seconds % 3600) / 60);
+    var hour = parseInt(seconds / 3600);
+    if(hour != 0) {
+        humanRead = hour + "小时";
+    }
+    if(minute != 0) {
+        humanRead += minute;
+        if(second == 0) {
+            humanRead += "分钟";
+        } else {
+            humanRead += "分";
+        }
+    }
+    if(humanRead == "") {
+        humanRead = second + "秒";
+    } else if (second != 0) {
+        humanRead += second + "秒";
+    }
+    return humanRead;
+}
+
 function initProfile() {
     var times = user.getTimes();
     var level = user.getLevel();
     document.getElementById("name").innerText = user.getName();
     document.getElementById("times").innerText = times;
-    document.getElementById("duration").innerText = parseInt(user.getDuration()).toFixed(0);
+    document.getElementById("duration").innerText = humanTime(parseInt(user.getDuration()));
     if(level < levels.length) {
         document.getElementById("level").innerText = "第" + user.getLevel() + "关";
         document.getElementById("start-button").innerText = "开始你的第" + (parseInt(times) + 1) + "次练习";
@@ -240,6 +266,11 @@ function initProfile() {
         document.getElementById("start-button").innerText = "您已通关";
     }
     document.getElementById("avatar").src = user.getAvatar();
+    var html = "";
+    for(level of levels) {
+        html += "<li>" + level.name + "</li>";
+    }
+    document.getElementById("list").innerHTML = html;
 }
 
 function initSetting() {
@@ -268,21 +299,37 @@ function initGround() {
 function passLevel(){
     alert("恭喜你通过了" + levels[user.getLevel()].name);
     user.addLevel();
-    setTitle("个人中心");
-    showSection("profile");
+    openProfile();
 }
 
 function updateProgress(trains, condition) {
     var skill = 0;
     var total = 0;
     var progress = document.getElementById("progress");
+    var topError = document.getElementById("top-error");
+    var topErrorList = new Array();
     for (train of trains) {
         if (train.unskilled <= condition) {
             skill += 1;
         }
         total += 1;
+        if (topErrorList.length < 5) {
+            topErrorList.push(train);
+        } else {
+            for (var i=0; i < topErrorList.length; i++) {
+                if (topErrorList[i].unskilled < train.unskilled) {
+                    topErrorList[i] = train;
+                    break;
+                }
+            }
+        }
     }
     progress.innerText = skill + '/' + total;
+    var text = "";
+    for (element of topErrorList) {
+        text += element.display + " "
+    }
+    topError.innerText = text;
     if (skill == total) {
         passLevel();
     }
@@ -315,9 +362,15 @@ function step(display, input ,level) {
             }
             setTimeout("input.value = '';", 50);
             recovery = true;
+            inputError();
         }
         updateProgress(level.getTrains(), condition);
     };
+}
+
+function inputError() {
+    document.body.style.backgroundColor = 'red';
+    setTimeout("document.body.style.backgroundColor = '';", 200);
 }
 
 /* 页面加载后执行 */

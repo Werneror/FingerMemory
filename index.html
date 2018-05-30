@@ -25,7 +25,7 @@
             <br /><br />
             <div><button onclick="start();" id="start-button"></button></div>
             <br />
-            <div>训练总时长：<span id="duration"></span>秒。</div>
+            <div>训练总时长：<span id="duration"></span></div>
             <div>训练总次数：<span id="times"></span>次。</div>
             <div>当前位于：<span id="level">第关</span>。</div>
             <br />
@@ -33,6 +33,9 @@
                 <button onclick="setting();">设置</button>
                 <button onclick="logout();">注销</button>
             </div>
+            <br />
+            <div>关卡概览：</div>
+            <ul id="list"></ul>
         </section>
 
         <section id="setting">
@@ -46,11 +49,15 @@
         </section>
 
         <section id="ground">
-            <h2 class="zigen" id="display"></h2>
+            <div class="zigen" id="display"></div>
             <input type="text" name="name" id="input" autofocus="autofocus" />
             <br />
             <br />
             <div>本关进度：<span id="progress"></span></div>
+            <br />
+            <div>TOP：<span id="top-error" class="zigen"></span></div>
+            <br />
+            <button onclick="openProfile();">返回</button>
         </section>
 
         <section id="help">

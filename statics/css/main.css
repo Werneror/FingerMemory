@@ -33,3 +33,7 @@ h1{
 #setting, #ground, #help {
     display: none;
 }
+#display {
+    margin: 30px;
+    font-size: 100px;
+}
