@@ -335,9 +335,13 @@ function updateProgress(trains, condition) {
     }
 }
 
-function step(display, input ,level) {
+function step(display, input ,level, pre_train=undefined) {
     input.value = ''; // 清除刷新页面后浏览器在input中的缓存
-    var train = producer(level.getTrains());
+    if (pre_train != undefined) {
+        var train = pre_train;
+    } else {
+        var train = producer(level.getTrains());
+    }
     var maxTime = level.getMaxTime();
     var condition = level.getCondition();
     display.innerText = train.display;
@@ -353,9 +357,14 @@ function step(display, input ,level) {
             }
             if (!recovery) {
                 var unskilledValue = unskilled(time);
-                level.updateUnskilled(train, unskilledValue);
+                if (pre_train == undefined) {
+                    level.updateUnskilled(train, unskilledValue);
+                }
+                setTimeout(step, 50, display, input ,level);
+            } else {
+                setTimeout(step, 50, display, input ,level, train);
             }
-            setTimeout("step(display, input ,level)", 50);
+
         } else {
             if (!recovery) {
                 level.updateUnskilled(train, unskilled(maxTime));
@@ -369,8 +378,8 @@ function step(display, input ,level) {
 }
 
 function inputError() {
-    document.body.style.backgroundColor = 'red';
-    setTimeout("document.body.style.backgroundColor = '';", 200);
+    document.getElementById('input').style.border = '3px solid red';
+    setTimeout("document.getElementById('input').style.border = '';", 200);
 }
 
 /* 页面加载后执行 */
