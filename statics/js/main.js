@@ -379,7 +379,8 @@ function step(display, input ,level, pre_train=undefined) {
 
 function inputError() {
     document.getElementById('input').style.border = '3px solid red';
-    setTimeout("document.getElementById('input').style.border = '';", 200);
+    document.getElementById('display').style.color = 'red';
+    setTimeout("document.getElementById('input').style.border = '';document.getElementById('display').style.color = '';", 200);
 }
 
 /* 页面加载后执行 */
