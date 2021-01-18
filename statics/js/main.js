@@ -293,6 +293,10 @@ function initGround() {
     updateProgress(level.getTrains(), level.getCondition());
     var display = document.getElementById("display");
     var input = document.getElementById("input");
+    if(level.number !=1) {
+        document.getElementById("display").className = "";
+        document.getElementById("top-error").className = "";
+    }
     step(display, input ,level);
 }
 
