@@ -100,7 +100,7 @@ function User(){
         // 返回用户头像的 url
         var qq = this.getQQ();
         if (qq != undefined) {
-            return "http://qlogo2.store.qq.com/qzone/"+qq+"/"+qq+"/200";
+            return `http://q3.qlogo.cn/g?b=qq&nk=${qq}&s=640`;
         } else {
             return "statics/img/avatar.jpg"
         }
