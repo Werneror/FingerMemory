@@ -2,7 +2,7 @@ levels = [
     {
         "name": "第零关：指法练习",
         "maxTime": 120,
-        "condition": 0.9,
+        "condition": 1.0,
         "data": [
             {"display": "a"},
             {"display": "b"},
@@ -35,7 +35,7 @@ levels = [
     {
         "name": "第一关：字根输入",
         "maxTime": 120,
-        "condition": 1.0,
+        "condition": 1.2,
         "data": [
             {'target': 'g', 'display': '一'},
             {'target': 'g', 'display': '丁'},
