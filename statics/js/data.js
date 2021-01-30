@@ -281,7 +281,7 @@ levels = [
     {
         "name": "第二关：一级简码",
         "maxTime": 120,
-        "condition": 1.2,
+        "condition": 1.1,
         "data": [
             {"display": "一"},
             {"display": "地"},
@@ -313,7 +313,7 @@ levels = [
     {
         "name": "第三关：键名汉字",
         "maxTime": 120,
-        "condition": 1.2,
+        "condition": 1.5,
         "data": [
             {"display": "金"},
             {"display": "人"},
