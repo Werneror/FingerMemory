@@ -311,7 +311,39 @@ levels = [
         ]
     },
     {
-        "name": "第三关：二级简码",
+        "name": "第三关：键名汉字",
+        "maxTime": 120,
+        "condition": 1.2,
+        "data": [
+            {"display": "金"},
+            {"display": "人"},
+            {"display": "月"},
+            {"display": "白"},
+            {"display": "禾"},
+            {"display": "言"},
+            {"display": "立"},
+            {"display": "水"},
+            {"display": "火"},
+            {"display": "之"},
+            {"display": "工"},
+            {"display": "木"},
+            {"display": "大"},
+            {"display": "土"},
+            {"display": "王"},
+            {"display": "目"},
+            {"display": "日"},
+            {"display": "口"},
+            {"display": "田"},
+            {"display": "山"},
+            {"display": "已"},
+            {"display": "子"},
+            {"display": "女"},
+            {"display": "又"},
+            {"display": "纟"}
+        ]
+    },
+    {
+        "name": "第四关：二级简码",
         "maxTime": 120,
         "condition": 1.5,
         "data": [
