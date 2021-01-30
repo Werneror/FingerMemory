@@ -351,7 +351,11 @@ function step(display, input ,level, pre_train=undefined) {
     display.innerText = train.display;
     var beginTime = new Date();
     var recovery = false;
-    input.oninput = function() {
+    window.lock = false;    // 防止中文输入法未完成输入时先判断输入的字母
+    input.onkeyup = function(event) {
+        if (event.keyCode < 32 || event.keyCode > 126 || window.lock) {
+            return;
+        }
         var endTime = new Date();
         var time = (endTime-beginTime) / 1000.0;
         user.addDuration(time);
@@ -379,6 +383,15 @@ function step(display, input ,level, pre_train=undefined) {
         }
         updateProgress(level.getTrains(), condition);
     };
+    if (!window.HasBeenListen) {
+        input.addEventListener('compositionstart', function () {
+            window.lock = true;
+        });
+        input.addEventListener('compositionend', function () {
+            window.lock = false;
+        });
+        window.HasBeenListen = true;
+    }
 }
 
 function inputError() {
