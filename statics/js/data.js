@@ -1,6 +1,6 @@
 levels = [
     {
-        "name": "第零关：指法练习",
+        "name": "指法练习",
         "maxTime": 120,
         "condition": 1.0,
         "data": [
@@ -33,7 +33,7 @@ levels = [
         ]
     },
     {
-        "name": "第一关：字根输入",
+        "name": "字根输入",
         "maxTime": 120,
         "condition": 1.2,
         "data": [
@@ -279,7 +279,7 @@ levels = [
         ]
     },
     {
-        "name": "第二关：一级简码",
+        "name": "一级简码",
         "maxTime": 120,
         "condition": 1.1,
         "data": [
@@ -311,7 +311,7 @@ levels = [
         ]
     },
     {
-        "name": "第三关：键名汉字",
+        "name": "键名汉字",
         "maxTime": 120,
         "condition": 1.5,
         "data": [
@@ -343,7 +343,7 @@ levels = [
         ]
     },
     {
-        "name": "第四关：二级简码",
+        "name": "二级简码",
         "maxTime": 120,
         "condition": 1.5,
         "data": [

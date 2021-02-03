@@ -252,6 +252,18 @@ function humanTime(seconds) {
     return humanRead;
 }
 
+function levelChange() {
+    var levelSelector = document.getElementById("level-selector");
+    var selectedLevel =  levelSelector.options[levelSelector.selectedIndex].value;
+    var r = confirm(`是否确定要跳转到第 ${selectedLevel} 关？`);
+    if (r == true) {
+        localStorage.level = parseInt(selectedLevel);
+    } else {
+        var level = user.getLevel();
+        levelSelector.value = level;
+    }
+}
+
 function initProfile() {
     var times = user.getTimes();
     var level = user.getLevel();
@@ -259,16 +271,24 @@ function initProfile() {
     document.getElementById("times").innerText = times;
     document.getElementById("duration").innerText = humanTime(parseInt(user.getDuration()));
     if(level < levels.length) {
-        document.getElementById("level").innerText = "第" + user.getLevel() + "关";
         document.getElementById("start-button").innerText = "开始你的第" + (parseInt(times) + 1) + "次练习";
     } else {
-        document.getElementById("level").innerText = "已通关";
         document.getElementById("start-button").innerText = "您已通关";
     }
+    var select = '<select  onchange="levelChange()" id="level-selector">';
+    for(var i=0; i<levels.length; i++) {
+        if (i == level) {
+            select += `<option value="${i}" selected>${i}</option>`;
+        } else {
+            select += `<option value="${i}">${i}</option>`;
+        }
+    }
+    select += '</select>';
+    document.getElementById("level").innerHTML = select;
     document.getElementById("avatar").src = user.getAvatar();
     var html = "";
-    for(level of levels) {
-        html += "<li>" + level.name + "</li>";
+    for(var i=0; i<levels.length; i++) {
+        html +=  `<li>第 ${i} 关：${levels[i].name}</li>`;
     }
     document.getElementById("list").innerHTML = html;
 }
