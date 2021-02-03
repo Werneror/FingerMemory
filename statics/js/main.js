@@ -313,7 +313,12 @@ function initGround() {
     updateProgress(level.getTrains(), level.getCondition());
     var display = document.getElementById("display");
     var input = document.getElementById("input");
-    if(level.number !=1) {
+    if(level.number == 1) {
+        // 第一关是字根输入练习，为正确显示字根，
+        // 需设置 class 为 zigen，以使用特殊字体
+        document.getElementById("display").className = "zigen";
+        document.getElementById("top-error").className = "zigen";
+    } else {
         document.getElementById("display").className = "";
         document.getElementById("top-error").className = "";
     }
