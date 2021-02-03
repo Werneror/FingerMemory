@@ -37,3 +37,10 @@ h1{
     margin: 30px;
     font-size: 100px;
 }
+
+#list {
+    padding-left: 0;
+}
+#list li {
+    list-style: none;
+}
