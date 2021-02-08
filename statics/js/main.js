@@ -10,9 +10,15 @@ function unskilled(duration) {
 
 /* 训练元随机发生器 */
 function producer(trains) {
+    var cache = new Array;
+    for(train of trains) {
+        cache.push(train);
+    }
+    // 按不熟练度降序排列
+    cache.sort(function(a, b) {return b.unskilled - a.unskilled});
     var accumulative = new Array;
     var total = 0;
-    for(train of trains) {
+    for(train of cache.slice(0, 100)) {    // 只在最不熟练的前 100 中取训练元
         var start = total;
         total += train.unskilled;
         accumulative.push({'start': start,
