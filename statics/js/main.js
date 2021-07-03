@@ -163,7 +163,14 @@ function CustomLevel() {
             return 0;
         });
         return customLevels;
-    };
+    }
+    this.GetLevel = function(name) {
+        var custom = JSON.parse(localStorage.getItem("custom"));
+        if (custom == null) {
+            custom = {};
+        }
+        return custom[name];
+    }
 }
 
 /* 关卡类 */
@@ -267,11 +274,14 @@ function setting() {
 function custom() {
     setTitle("自定义练习");
     showSection("custom");
+    document.getElementById("new-name").value = "";
+    document.getElementById("new-characters").value = "";
 }
 
 function addCustom() {
     setTitle("新增自定义练习");
     showSection("add-custom");
+    document.getElementById("new-name").disabled = false;
 }
 
 function logout() {
@@ -356,6 +366,21 @@ function levelChange() {
 function deleteCustom(name) {
     customLevel.DelLevel(name);
     custom();
+}
+
+function editCustom(name) {
+    setTitle("编辑自定义练习："+name);
+    showSection("add-custom");
+    var level = customLevel.GetLevel(name);
+    var characters = "";
+    if (typeof(level) != "undefined") {
+        for (char of level.characters) {
+            characters += char;
+        }
+    }
+    document.getElementById("new-name").disabled = true;
+    document.getElementById("new-name").value = name;
+    document.getElementById("new-characters").value = characters;
 }
 
 function initProfile() {
