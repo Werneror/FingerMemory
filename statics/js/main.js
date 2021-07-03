@@ -126,14 +126,24 @@ function CustomLevel() {
         if (custom == null) {
             custom = {};
         }
+        var d = new Date();
         var level = {
             "name": name,
             "characters": characters,
-            "date": new Date()
+            "date": d.toLocaleString(),
+            "size": characters.length,
         }
         custom[name] = level;
         localStorage.setItem("custom", JSON.stringify(custom));
     };
+    this.DelLevel = function(name) {
+        var custom = JSON.parse(localStorage.getItem("custom"));
+        if (custom == null) {
+            return;
+        }
+        delete custom[name];
+        localStorage.setItem("custom", JSON.stringify(custom));
+    }
     this.GetAllLevel = function() {
         var custom = JSON.parse(localStorage.getItem("custom"));
         if (custom == null) {
@@ -343,6 +353,11 @@ function levelChange() {
     }
 }
 
+function deleteCustom(name) {
+    customLevel.DelLevel(name);
+    custom();
+}
+
 function initProfile() {
     var times = user.getTimes();
     var level = user.getLevel();
@@ -384,7 +399,15 @@ function initSetting() {
 }
 
 function initCustom() {
-
+    var allLevels = customLevel.GetAllLevel();
+    var html = "";
+    for(level of allLevels) {
+        html +=  `<li>${level.name}（${level.size} 字，${level.date}）<button onclick="startCustom('${level.name}');" id="start-custom">练习</button><button onclick="editCustom('${level.name}');" id="edit-custom">编辑</button><button onclick="deleteCustom('${level.name}');" id="delete-custom">删除</button></li>`;
+    }
+    if (html == "") {
+        html = "还没有自定义练习，请先添加";
+    }
+    document.getElementById("custom-list").innerHTML = html;
 }
 
 function initAddCustom() {

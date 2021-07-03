@@ -38,9 +38,9 @@ h1{
     font-size: 100px;
 }
 
-#list {
+.list {
     padding-left: 0;
 }
-#list li {
+.list li {
     list-style: none;
 }
