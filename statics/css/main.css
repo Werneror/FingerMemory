@@ -30,7 +30,7 @@ h1{
 .zigen{
     font-family: HanZiRootFont;
 }
-#setting, #ground, #help {
+#setting, #ground, #custom, #add-custom {
     display: none;
 }
 #display {

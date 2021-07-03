@@ -35,7 +35,7 @@ function producer(trains) {
 }
 
 /* 用户类 */
-function User(){
+function User() {
     this.getName = function() {
         if (this.name == undefined) {
             this.name = localStorage.name;
@@ -119,6 +119,43 @@ function User(){
     };
 }
 
+/* 自定义关卡类 */
+function CustomLevel() {
+    this.NewLevel = function(name, characters) {
+        var custom = JSON.parse(localStorage.getItem("custom"));
+        if (custom == null) {
+            custom = {};
+        }
+        var level = {
+            "name": name,
+            "characters": characters,
+            "date": new Date()
+        }
+        custom[name] = level;
+        localStorage.setItem("custom", JSON.stringify(custom));
+    };
+    this.GetAllLevel = function() {
+        var custom = JSON.parse(localStorage.getItem("custom"));
+        if (custom == null) {
+            custom = {};
+        }
+        var customLevels = new Array();
+        for (var key in custom) {
+            customLevels.push(custom[key]);
+        }
+        // 按时间倒序排序
+        customLevels.sort(function(a, b) {
+            if (a.date > b.date) {
+                return -1;
+            } else if (a.date < b.date) {
+                return 1;
+            }
+            return 0;
+        });
+        return customLevels;
+    };
+}
+
 /* 关卡类 */
 function Level(number, maxTime, condition) {
 
@@ -189,6 +226,10 @@ function showSection(sectionId) {
         initProfile();
     } else if (sectionId === "setting"){
         initSetting();
+    } else if (sectionId === "custom"){
+        initCustom();
+    } else if (sectionId === "AddCustom"){
+        initAddCustom();
     } else if (sectionId === "ground"){
         initGround();
     }
@@ -213,6 +254,16 @@ function setting() {
     showSection("setting");
 }
 
+function custom() {
+    setTitle("自定义练习");
+    showSection("custom");
+}
+
+function addCustom() {
+    setTitle("新增自定义练习");
+    showSection("add-custom");
+}
+
 function logout() {
     user.suicide();
     setTitle("注册新用户");
@@ -231,6 +282,28 @@ function submit() {
     } else {
         alert("昵称是必填的。");
     }
+}
+
+var chinesePattern = new RegExp("[\u4E00-\u9FA5]+");
+function newCustom() {
+    var name = document.getElementById("new-name").value;
+    var characters = new Set(document.getElementById("new-characters").value);
+    var chineseCharacters = new Array();
+    characters.forEach(function(value) {
+        if (chinesePattern.test(value)) {
+            chineseCharacters.push(value);
+        }
+    });
+    if (name == '') {
+        alert("名称是必填的。");
+        return;
+    }
+    if (chineseCharacters.length == 0) {
+        alert("输入的有效字符为空。");
+        return;
+    }
+    customLevel.NewLevel(name, chineseCharacters);
+    custom();
 }
 
 /* 填充函数 */
@@ -308,6 +381,14 @@ function initSetting() {
     if (qq != undefined) {
         document.getElementById("user-qq").value = qq;
     }
+}
+
+function initCustom() {
+
+}
+
+function initAddCustom() {
+
 }
 
 function initGround() {
@@ -434,6 +515,7 @@ function inputError() {
 /* 页面加载后执行 */
 window.onload = function(){
     user = new User();
+    customLevel = new CustomLevel();
     if (user.isNewMember()) {
         setTitle("注册新用户");
         showSection("setting");

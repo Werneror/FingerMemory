@@ -33,6 +33,7 @@
             <br />
             <div>
                 <button onclick="setting();">设置</button>
+                <button onclick="custom();">自定义练习</button>
                 <button onclick="logout();">注销</button>
             </div>
             <br />
@@ -65,7 +66,24 @@
             <button onclick="openProfile();">返回</button>
         </section>
 
-        <section id="help">
+        <section id="custom">
+            <div>已添加的自定义练习：</div>
+            <ul id="custom-list"></ul>
+            <div>
+                <button onclick="addCustom();">新增</button>
+            	<button onclick="openProfile();">返回</button>
+            </div>
+        </section>
+
+        <section id="add-custom">
+        	名称：<input id="new-name" placeholder="起个恰当的名字便于以后查找" type="text" style="width: 200px;">
+        	<br /><br />
+            <textarea id="new-characters" placeholder="将想要练习的文字复制粘贴到这里，有空格或换行也没关系" cols="60" rows="15"></textarea>
+            <br /><br />
+            <div>
+                <button onclick="newCustom();">新增</button>
+            	<button onclick="custom();">取消</button>
+            </div>
         </section>
     </main>
 
