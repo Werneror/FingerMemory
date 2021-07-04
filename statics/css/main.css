@@ -26,7 +26,10 @@ input{
 h1{
     margin: 0px;
 }
-
+.instructions {
+    width: 450px;
+    margin: auto;
+}
 .zigen{
     font-family: HanZiRootFont;
 }

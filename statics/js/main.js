@@ -121,6 +121,16 @@ function User() {
 
 /* 自定义关卡类 */
 function CustomLevel() {
+    this.currentLevelName = "";
+    this.setCurrentLevelName = function(name) {
+        this.currentLevelName = name;
+    }
+    this.getCurrentLevelName = function() {
+        return this.currentLevelName;
+    }
+    this.getCurrentLevel = function() {
+        return this.GetLevel(this.currentLevelName);
+    }
     this.NewLevel = function(name, characters) {
         var custom = JSON.parse(localStorage.getItem("custom"));
         if (custom == null) {
@@ -198,7 +208,13 @@ function Level(number, maxTime, condition) {
 
     this.initTrains = function() {
         var trains = new Array();
-        var data = levels[this.number].data;
+        var level = levels[this.number];
+        var data;
+        if (typeof(level) == "undefined") {
+            data = JSON.parse(localStorage.getItem("levelData" + this.number));
+        } else {
+            data = level.data;
+        }
         var maxUnskilled = unskilled(this.maxTime);
         for(item of data) {
             if (item.target != undefined) {
@@ -259,11 +275,18 @@ function openProfile() {
 }
 
 function start() {
+    customLevel.setCurrentLevelName("");
     if(user.getLevel() < levels.length) {
         user.addTimes();
         setTitle(levels[user.getLevel()].name);
         showSection("ground");
     }
+}
+
+function startCustom(name) {
+    setTitle("练习自定义关卡："+name);
+    customLevel.setCurrentLevelName(name);
+    showSection("ground");
 }
 
 function setting() {
@@ -441,10 +464,22 @@ function initAddCustom() {
 
 function initGround() {
     document.getElementById("input").focus();
-    var current = user.getLevel();
-    level = new Level(current,
-                      levels[current].maxTime,
-                      levels[current].condition);
+    var level;
+    if (customLevel.getCurrentLevelName() == "") {
+        var current = user.getLevel();
+        level = new Level(current,
+                          levels[current].maxTime,
+                          levels[current].condition);
+    } else {
+        var currentLevel = customLevel.getCurrentLevel();
+        localStorage.removeItem("level"+currentLevel.name);    // 删除原有的练习数据
+        var data = new Array();
+        for (char of currentLevel.characters) {
+            data.push({"display": char});
+        }
+        localStorage.setItem("levelData" + currentLevel.name, JSON.stringify(data));
+        level = new Level(currentLevel.name, 120, 1.8);
+    }
     updateProgress(level.getTrains(), level.getCondition());
     var display = document.getElementById("display");
     var input = document.getElementById("input");
@@ -460,10 +495,16 @@ function initGround() {
     step(display, input ,level);
 }
 
-function passLevel(){
-    alert("恭喜你通过了" + levels[user.getLevel()].name);
-    user.addLevel();
-    openProfile();
+function passLevel() {
+    var name = customLevel.getCurrentLevelName();
+    if (name == "") {
+        alert("恭喜你通过了" + levels[user.getLevel()].name);
+        user.addLevel();
+        openProfile();
+    } else {
+        alert("恭喜你通过了自定义练习：" + name);
+        custom();
+    }
 }
 
 function updateProgress(trains, condition) {
